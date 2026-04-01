@@ -9,3 +9,7 @@
   --color-gray-light: #F6F8FA;
   --color-selected: #32A8F8;
 }
+
+body {
+  font-family: 'Noto Sans JP', sans-serif;
+}

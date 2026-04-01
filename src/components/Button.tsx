@@ -7,16 +7,16 @@ type Props = {
 }
 const Button = ({ variant, onClick, disabled, children, icon }: Props) => {
   const variants = {
-    primary: 'bg-brand text-white hover:bg-blue-400 active:bg-blue-600',
-    secondary: 'border-2 border-brand bg-white text-brand hover:bg-gray-100 active:bg-gray-200',
-    normal: 'bg-btn-normal text-white hover:bg-gray-400 active:bg-gray-500',
+    primary: 'bg-brand hover:bg-[#3C8EC4] active:bg-[#347CAB] text-white',
+    secondary: 'border-2 border-brand bg-white text-brand hover:bg-[#CCCCCC] active:bg-[#B3B3B3]',
+    normal: 'bg-btn-normal text-white hover:bg-[#999999] active:bg-[#808080]',
   }
 
   return (
     <button
       onClick={onClick}
       disabled={disabled}
-      className={`${variants[variant]} flex flex-col items-center justify-center w-[90px] h-10 rounded disabled:opacity-50 text-[10px] font-bold`}
+      className={`${variants[variant]} flex flex-col items-center justify-center w-[90px] h-10 rounded disabled:opacity-50 text-[10px] font-bold  transition-colors duration-300`}
     >
       {icon && <img src={icon} className="w-6 h-6" />}
       {children}
