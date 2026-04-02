@@ -7,9 +7,10 @@ type Props = {
 	selectedId: number | null
 	onSelect: (id: number | null) => void
 	refreshKey: number
+	onCreateNew: (id: number) => void
 }
 
-const Sidebar = ({ selectedId, onSelect,refreshKey }: Props) => {
+const Sidebar = ({ selectedId, onSelect, refreshKey, onCreateNew }: Props) => {
 	const [contents, setContents] = useState<Content[]>([])
 	const [isEditing, setIsEditing] = useState(false)
 
@@ -28,13 +29,17 @@ const Sidebar = ({ selectedId, onSelect,refreshKey }: Props) => {
 		const data = await getContents()
 		setContents(data)
 		onSelect(newContent.id)
+		onCreateNew(newContent.id)
 	}
 
 	// 取得
 	useEffect(() => {
 		getContents().then(data => {
 			setContents(data)
-			if (data.length > 0) onSelect(data[0].id)
+			const currentExists = data.some(c => c.id === selectedId)
+			if (!currentExists) {
+				onSelect(data.length > 0 ? data[0].id : null)
+			}
 		})
 	}, [refreshKey])
 

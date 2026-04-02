@@ -2,16 +2,22 @@ import { useEffect, useState } from 'react'
 import { getContent, updateContent } from '../api/content'
 import type { Content } from '../api/content'
 import Button from './Button'
+import { validateTitle, validateBody } from '../utils/validation'
 
 type Props = {
   selectedId: number | null
   onUpdate: () => void
+  isNewContent: boolean
+  onNewContentHandled: () => void
+  isTitleEditing: boolean
+  setIsTitleEditing: (value: boolean) => void
+  isBodyEditing: boolean
+  setIsBodyEditing: (value: boolean) => void
+  onBodySaved: () => void
 }
 
-const MainContent = ({ selectedId, onUpdate }: Props) => {
+const MainContent = ({ selectedId, onUpdate, isNewContent, onNewContentHandled, isTitleEditing, setIsTitleEditing, isBodyEditing, setIsBodyEditing, onBodySaved }: Props) => {
   const [content, setContent] = useState<Content | null>(null)
-  const [isTitleEditing, setIsTitleEditing] = useState(false)
-  const [isBodyEditing, setIsBodyEditing] = useState(false)
   const [titleValue, setTitleValue] = useState('')
   const [bodyValue, setBodyValue] = useState('')
   const [titleError, setTitleError] = useState('')
@@ -20,8 +26,9 @@ const MainContent = ({ selectedId, onUpdate }: Props) => {
   // タイトルの保存
   const handleTitleSave = async () => {
     if (!content) return
-    if (titleValue.length < 1 || titleValue.length > 50) {
-      setTitleError('タイトルは1文字以上50文字以下で入力してください')
+    const error = validateTitle(titleValue)
+    if (error) {
+      setTitleError(error)
       return
     }
     setTitleError('')
@@ -34,14 +41,16 @@ const MainContent = ({ selectedId, onUpdate }: Props) => {
   // 本文の保存
   const handleBodySave = async () => {
     if (!content) return
-      if (bodyValue.length < 10 || bodyValue.length > 2000) {
-      setBodyError('本文は10文字以上2000文字以下で入力してください')
+    const error = validateBody(bodyValue)
+    if (error) {
+      setBodyError(error)
       return
     }
     setBodyError('')
     const updated = await updateContent(content.id, { body: bodyValue })
     setContent(updated)
     setIsBodyEditing(false)
+    onBodySaved()
     onUpdate()
   }
 
@@ -57,6 +66,13 @@ const MainContent = ({ selectedId, onUpdate }: Props) => {
       setBodyValue(data.body)
     })
   }, [selectedId])
+
+  useEffect(() => {
+    if (isNewContent) {
+      setIsBodyEditing(true)
+      onNewContentHandled()
+    }
+  }, [isNewContent])
 
   if (!content) return (
     <div className="flex-1 flex flex-col overflow-auto">
