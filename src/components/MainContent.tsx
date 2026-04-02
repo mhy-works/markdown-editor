@@ -83,7 +83,7 @@ const MainContent = ({ selectedId, onUpdate, isNewContent, onNewContentHandled, 
           </div>
         </div>
       </div>
-      <footer className="shrink-0 h-15 flex justify-between items-center px-10">
+      <footer className="shrink-0 h-15 flex justify-between items-center px-10 text-xs">
         <span>Copyright © 2021 Sample</span>
         <span>運営会社</span>
       </footer>
@@ -91,9 +91,9 @@ const MainContent = ({ selectedId, onUpdate, isNewContent, onNewContentHandled, 
   )
 
   return (
-    <div className="flex-1 flex flex-col overflow-auto">
-      <div className="flex-1 flex flex-col px-10">
-        <div className="w-full flex-1 flex flex-col max-w-[1080px] mt-7.5 mx-auto pb-7.5 bg-bg-light rounded-2xl">
+    <div className="flex-1 flex flex-col overflow-hidden min-h-0">
+      <div className="flex-1 flex flex-col px-10 min-h-0">
+        <div className="w-full flex-1 flex flex-col max-w-[1080px] mt-7.5 mx-auto pb-7.5 bg-bg-light rounded-2xl min-h-0">
           <div className="flex px-7.5 pt-7.5">
             <div className="flex-1 pr-7.5 min-h-10 flex items-center">
               {isTitleEditing ? (
@@ -120,19 +120,19 @@ const MainContent = ({ selectedId, onUpdate, isNewContent, onNewContentHandled, 
               )}
             </div>
           </div>
-          <div className="flex-1 flex px-7.5 pt-5">
-            <div className="flex-1 pr-7.5">
+          <div className="flex-1 flex px-7.5 pt-5 min-h-0 overflow-hidden">
+            <div className="flex-1 pr-7.5 min-h-0 overflow-hidden">
               {isBodyEditing ? (
-                <div className="w-full h-full flex flex-col flex-1">
-                  <textarea 
-                    className="flex-1 block w-full h-full min-w-0 bg-white border border-brand rounded-lg p-7.5"
+                <div className="h-full flex flex-col">
+                  <textarea
+                    className="flex-1 block w-full min-w-0 bg-white border border-brand rounded-lg p-7.5"
                     value={bodyValue}
                     onChange={(e) => setBodyValue(e.target.value)}
                   />
                   {bodyError && <p className="text-red-500 text-sm mt-1 rounded-lg">{bodyError}</p>}
                 </div>
               ) : (
-                <div className="bg-white p-7.5 overflow-auto whitespace-pre-wrap">{content.body}</div>
+                <div className="h-full bg-white p-7.5 overflow-auto whitespace-pre-wrap">{content.body}</div>
               )}
             </div>
             <div className="w-[90px] shrink-0">
@@ -148,7 +148,7 @@ const MainContent = ({ selectedId, onUpdate, isNewContent, onNewContentHandled, 
           </div>
         </div>
       </div>
-      <footer className="shrink-0 h-15 flex justify-between items-center px-10">
+      <footer className="shrink-0 h-15 flex justify-between items-center px-10 text-xs">
         <span>Copyright © 2021 Sample</span>
         <span>運営会社</span>
       </footer>
