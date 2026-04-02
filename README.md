@@ -1,73 +1,60 @@
-# React + TypeScript + Vite
+# Markdown Editor
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+NCDCフロントエンド採用課題の実装リポジトリです。
 
-Currently, two official plugins are available:
+## 使用技術
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+| 技術 | 選択理由 |
+|------|---------|
+| React | 実務での使用経験があり、コンポーネント設計の考え方が課題の要件に適していると判断 |
+| TypeScript | 型安全な開発により、APIのレスポンスやpropsの型を明示でき、可読性・保守性が向上する |
+| Vite | 学習も兼ねて採用。高速なHMRにより開発体験が良い |
+| Tailwind CSS | 実務での使用経験があり、デザイン仕様の数値をそのまま反映しやすい |
 
-## React Compiler
+## 実行環境構築
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### バックエンド（企業提供）
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+git clone https://github.com/ncdcdev/recruit-frontend
+cd recruit-frontend
+npm install
+npm run migration:run
+npm run start
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### フロントエンド（本リポジトリ）
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+npm run dev
 ```
+
+ブラウザで `http://localhost:5173` を開いてください。
+※バックエンドが `http://localhost:3000` で起動している必要があります。
+
+## 設計思想
+
+### コンポーネント設計
+
+画面を役割ごとに分割し、各コンポーネントが単一の責務を持つように設計しました。
+
+```
+App
+├── Sidebar         # ページ一覧・追加・削除
+└── MainContent     # 選択ページのタイトル・本文の表示・編集
+```
+
+共通UIは `Button` コンポーネントとして切り出し、`variant` プロパティで見た目を切り替える設計にしました。これにより、ボタンのスタイル変更が一箇所で済みます。
+
+### 状態管理
+
+選択中のページID（`selectedId`）は `App` で管理し、`Sidebar` と `MainContent` にpropsで渡す設計にしました。これにより、サイドバーでの選択がメインエリアに反映されます。
+
+### APIの管理
+
+`src/api/content.ts` にAPI呼び出しをまとめることで、エンドポイントの変更が1ファイルで完結するようにしました。
+
+## 追加実装
+
+- **ページが存在しない場合の表示**：全ページを削除した際に「ページを作成してください」というメッセージを表示するようにしました。
