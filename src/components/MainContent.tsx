@@ -13,10 +13,17 @@ const MainContent = ({ selectedId }: Props) => {
   const [isBodyEditing, setIsBodyEditing] = useState(false)
   const [titleValue, setTitleValue] = useState('')
   const [bodyValue, setBodyValue] = useState('')
+  const [titleError, setTitleError] = useState('')
+  const [bodyError, setBodyError] = useState('')
 
   // タイトルの保存
   const handleTitleSave = async () => {
     if (!content) return
+    if (titleValue.length < 1 || titleValue.length > 50) {
+      setTitleError('タイトルは1文字以上50文字以下で入力してください')
+      return
+    }
+    setTitleError('')
     const updated = await updateContent(content.id, { title: titleValue })
     setContent(updated)
     setIsTitleEditing(false)
@@ -25,6 +32,11 @@ const MainContent = ({ selectedId }: Props) => {
   // 本文の保存
   const handleBodySave = async () => {
     if (!content) return
+      if (bodyValue.length < 10 || bodyValue.length > 2000) {
+      setBodyError('本文は10文字以上2000文字以下で入力してください')
+      return
+    }
+    setBodyError('')
     const updated = await updateContent(content.id, { body: bodyValue })
     setContent(updated)
     setIsBodyEditing(false)
@@ -46,14 +58,17 @@ const MainContent = ({ selectedId }: Props) => {
     <div className="flex-1 flex flex-col overflow-auto">
       <div className="flex-1 flex flex-col px-10">
         <div className="w-full flex-1 flex flex-col max-w-[1080px] mt-7.5 mx-auto bg-bg-light rounded-2xl">
-          <div className="flex items-center px-[30px] pt-[30px]">
+          <div className="flex px-[30px] pt-[30px]">
             <div className="flex-1 pr-7.5 min-h-10 flex items-center">
               {isTitleEditing ? (
-                <input 
-                  className="w-full px-[30px] bg-white border border-brand rounded-lg text-2xl font-bold" 
-                  value={titleValue}
-                  onChange={(e) => setTitleValue(e.target.value)}
-                />
+                <div className="w-full">
+                  <input 
+                    className="w-full px-[30px] bg-white border border-brand rounded-lg text-2xl font-bold" 
+                    value={titleValue}
+                    onChange={(e) => setTitleValue(e.target.value)}
+                  />
+                  {titleError && <p className="text-red-500 text-sm mt-1">{titleError}</p>}
+                </div>
               ) : (
                 <h1 className="px-[30px] text-2xl font-bold">{content.title}</h1>
               )}
@@ -72,11 +87,14 @@ const MainContent = ({ selectedId }: Props) => {
           <div className="flex-1 flex px-[30px] pt-5">
             <div className="flex-1 pr-7.5">
               {isBodyEditing ? (
-                <textarea 
-                  className="block w-full h-full min-w-0 bg-white border border-brand rounded-lg p-7.5"
-                  value={bodyValue}
-                  onChange={(e) => setBodyValue(e.target.value)}
-                />
+                <div className="w-full">
+                  <textarea 
+                    className="block w-full h-full min-w-0 bg-white border border-brand rounded-lg p-7.5"
+                    value={bodyValue}
+                    onChange={(e) => setBodyValue(e.target.value)}
+                  />
+                  {bodyError && <p className="text-red-500 text-sm mt-1">{bodyError}</p>}
+                </div>
               ) : (
                 <div className="bg-white p-7.5 overflow-auto">{content.body}</div>
               )}
