@@ -44,12 +44,12 @@ const Sidebar = ({ selectedId, onSelect, refreshKey, onCreateNew }: Props) => {
 	}, [refreshKey])
 
 	return (
-		<div className="w-70 pt-7.5 border-r border-gray-light flex flex-col h-full">
-			<div className="flex items-center gap-1 mb-5 pl-10">
+		<div className="w-full md:w-60 lg:w-70 pt-5 md:pt-7.5 border-r border-gray-light flex flex-col h-full">
+			<div className="flex items-center gap-1 mb-5 pl-5 lg:pl-10">
 				<img src="/src/assets/img/icon/logo.svg" className="h-8" />
 				<span className="font-bold text-2xl text-[#1A1A1A]">ServiceName</span>
 			</div>
-			<ul className='pl-10 overflow-auto flex-1'>
+			<ul className='pl-5 lg:pl-10 overflow-auto flex-1'>
 				{contents.map(content => (
 					<li
 						key={content.id}
@@ -60,7 +60,7 @@ const Sidebar = ({ selectedId, onSelect, refreshKey, onCreateNew }: Props) => {
 						{isEditing && (
 							<button 
 								onClick={() => handleDelete(content.id)}
-								className="hover:bg-[#E6E6E6] rounded transition-colors duration-300 p-0.5 cursor-pointer"
+								className="hover:bg-[#E6E6E6] rounded transition-colors duration-300 p-0.5 cursor-pointer shrink-0"
 							>
 								<img src="/src/assets/img/icon/delete.svg" className="w-5 h-5" />
 							</button>
@@ -69,7 +69,7 @@ const Sidebar = ({ selectedId, onSelect, refreshKey, onCreateNew }: Props) => {
 				))}
 			</ul>
 
-			<div className='mt-auto pl-10 p-2.5 bg-gray-light'>
+			<div className='mt-auto pl-5 lg:pl-10 p-2.5 bg-gray-light'>
 				{isEditing ? (
 					<div className='flex gap-2.5 justify-between'>
 						<Button variant="secondary" icon="/src/assets/img/icon/+.svg" onClick={handleCreate}>New page</Button>

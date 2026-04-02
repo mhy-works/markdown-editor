@@ -47,25 +47,33 @@ function App() {
     setShowModal(false)
   }
 
+  // レスポンシブ切替え
+  const handleBack = () => setSelectedId(null)
+
   return (
     <div className="flex h-screen">
-      <Sidebar 
-        selectedId={selectedId} 
-        onSelect={handleSelect}
-        refreshKey={refreshKey} 
-        onCreateNew={handleCreateNew} 
-      />
-      <MainContent 
-        selectedId={selectedId} 
-        onUpdate={handleUpdate} 
-        isNewContent={isNewContent} 
-        onNewContentHandled={handleNewContentHandled}
-        isTitleEditing={isTitleEditing}
-        setIsTitleEditing={setIsTitleEditing}
-        isBodyEditing={isBodyEditing}
-        setIsBodyEditing={setIsBodyEditing}
-        onBodySaved={handleBodySaved}
-      />
+      <div className={selectedId !== null ? 'hidden md:block' : 'block w-full md:w-auto'}>
+        <Sidebar 
+          selectedId={selectedId} 
+          onSelect={handleSelect}
+          refreshKey={refreshKey} 
+          onCreateNew={handleCreateNew} 
+        />
+      </div>
+      <div className={`${selectedId === null ? 'hidden md:flex' : 'flex'} flex-1`}>
+        <MainContent 
+          selectedId={selectedId} 
+          onUpdate={handleUpdate} 
+          isNewContent={isNewContent} 
+          onNewContentHandled={handleNewContentHandled}
+          isTitleEditing={isTitleEditing}
+          setIsTitleEditing={setIsTitleEditing}
+          isBodyEditing={isBodyEditing}
+          setIsBodyEditing={setIsBodyEditing}
+          onBodySaved={handleBodySaved}
+          onBack={handleBack}
+        />
+      </div>
       {showModal && (
         <Modal 
           message="編集中の内容が破棄されます。よろしいですか？" 
