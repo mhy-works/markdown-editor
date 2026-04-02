@@ -6,16 +6,16 @@ import Button from './Button'
 type Props = {
 	selectedId: number | null
 	onSelect: (id: number | null) => void
+	refreshKey: number
 }
 
-const Sidebar = ({ selectedId, onSelect }: Props) => {
+const Sidebar = ({ selectedId, onSelect,refreshKey }: Props) => {
 	const [contents, setContents] = useState<Content[]>([])
 	const [isEditing, setIsEditing] = useState(false)
 
 	// 削除
 	const handleDelete = async (id: number) => {
 		await deleteContent(id)
-		if (selectedId === id) onSelect(null)
 		const data = await getContents()
 		setContents(data)
 		if (selectedId === id) {
@@ -30,18 +30,21 @@ const Sidebar = ({ selectedId, onSelect }: Props) => {
 		onSelect(newContent.id)
 	}
 
-
+	// 取得
 	useEffect(() => {
-		getContents().then(data => setContents(data))
-	}, [])
+		getContents().then(data => {
+			setContents(data)
+			if (data.length > 0) onSelect(data[0].id)
+		})
+	}, [refreshKey])
 
 	return (
-		<div className="w-70 pt-[30px] border-r border-gray-light flex flex-col h-full">
+		<div className="w-70 pt-7.5 border-r border-gray-light flex flex-col h-full">
 			<div className="flex items-center gap-1 mb-5 pl-10">
 				<img src="/src/assets/img/icon/logo.svg" className="h-8" />
 				<span className="font-bold text-2xl text-[#1A1A1A]">ServiceName</span>
 			</div>
-			<ul className='pl-10'>
+			<ul className='pl-10 overflow-auto flex-1'>
 				{contents.map(content => (
 					<li
 						key={content.id}
@@ -50,7 +53,10 @@ const Sidebar = ({ selectedId, onSelect }: Props) => {
 					>
 						<span className='truncate'>{content.title}</span>
 						{isEditing && (
-							<button onClick={() => handleDelete(content.id)}>
+							<button 
+								onClick={() => handleDelete(content.id)}
+								className="hover:bg-[#E6E6E6] rounded transition-colors duration-300 p-0.5 cursor-pointer"
+							>
 								<img src="/src/assets/img/icon/delete.svg" className="w-5 h-5" />
 							</button>
 						)}

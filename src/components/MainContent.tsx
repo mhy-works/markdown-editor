@@ -5,9 +5,10 @@ import Button from './Button'
 
 type Props = {
   selectedId: number | null
+  onUpdate: () => void
 }
 
-const MainContent = ({ selectedId }: Props) => {
+const MainContent = ({ selectedId, onUpdate }: Props) => {
   const [content, setContent] = useState<Content | null>(null)
   const [isTitleEditing, setIsTitleEditing] = useState(false)
   const [isBodyEditing, setIsBodyEditing] = useState(false)
@@ -27,6 +28,7 @@ const MainContent = ({ selectedId }: Props) => {
     const updated = await updateContent(content.id, { title: titleValue })
     setContent(updated)
     setIsTitleEditing(false)
+    onUpdate()
   }
 
   // 本文の保存
@@ -40,11 +42,15 @@ const MainContent = ({ selectedId }: Props) => {
     const updated = await updateContent(content.id, { body: bodyValue })
     setContent(updated)
     setIsBodyEditing(false)
+    onUpdate()
   }
 
   // 選択ページのコンテンツを取得
   useEffect(() => {
-    if (selectedId === null) return
+    if (selectedId === null) {
+      setContent(null)
+      return
+    }
     getContent(selectedId).then(data => {
       setContent(data)
       setTitleValue(data.title)
@@ -52,25 +58,39 @@ const MainContent = ({ selectedId }: Props) => {
     })
   }, [selectedId])
 
-  if (!content) return <div className="flex-1">ページを選択してください</div>
+  if (!content) return (
+    <div className="flex-1 flex flex-col overflow-auto">
+      <div className="flex-1 flex flex-col px-10">
+        <div className="w-full flex-1 flex flex-col max-w-[1080px] mt-7.5 mx-auto bg-bg-light rounded-2xl">
+          <div className="flex-1 flex items-center justify-center text-text-light">
+            ページを作成してください
+          </div>
+        </div>
+      </div>
+      <footer className="shrink-0 h-15 flex justify-between items-center px-10">
+        <span>Copyright © 2021 Sample</span>
+        <span>運営会社</span>
+      </footer>
+    </div>
+  )
 
   return (
     <div className="flex-1 flex flex-col overflow-auto">
       <div className="flex-1 flex flex-col px-10">
-        <div className="w-full flex-1 flex flex-col max-w-[1080px] mt-7.5 mx-auto bg-bg-light rounded-2xl">
-          <div className="flex px-[30px] pt-[30px]">
+        <div className="w-full flex-1 flex flex-col max-w-[1080px] mt-7.5 mx-auto pb-7.5 bg-bg-light rounded-2xl">
+          <div className="flex px-7.5 pt-7.5">
             <div className="flex-1 pr-7.5 min-h-10 flex items-center">
               {isTitleEditing ? (
                 <div className="w-full">
                   <input 
-                    className="w-full px-[30px] bg-white border border-brand rounded-lg text-2xl font-bold" 
+                    className="w-full px-7.5 bg-white border border-brand rounded-lg text-2xl font-bold" 
                     value={titleValue}
                     onChange={(e) => setTitleValue(e.target.value)}
                   />
                   {titleError && <p className="text-red-500 text-sm mt-1">{titleError}</p>}
                 </div>
               ) : (
-                <h1 className="px-[30px] text-2xl font-bold">{content.title}</h1>
+                <h1 className="px-7.5 text-2xl font-bold">{content.title}</h1>
               )}
             </div>
             <div className="w-[90px] shrink-0">
@@ -84,19 +104,19 @@ const MainContent = ({ selectedId }: Props) => {
               )}
             </div>
           </div>
-          <div className="flex-1 flex px-[30px] pt-5">
+          <div className="flex-1 flex px-7.5 pt-5">
             <div className="flex-1 pr-7.5">
               {isBodyEditing ? (
-                <div className="w-full">
+                <div className="w-full h-full flex flex-col flex-1">
                   <textarea 
-                    className="block w-full h-full min-w-0 bg-white border border-brand rounded-lg p-7.5"
+                    className="flex-1 block w-full h-full min-w-0 bg-white border border-brand rounded-lg p-7.5"
                     value={bodyValue}
                     onChange={(e) => setBodyValue(e.target.value)}
                   />
-                  {bodyError && <p className="text-red-500 text-sm mt-1">{bodyError}</p>}
+                  {bodyError && <p className="text-red-500 text-sm mt-1 rounded-lg">{bodyError}</p>}
                 </div>
               ) : (
-                <div className="bg-white p-7.5 overflow-auto">{content.body}</div>
+                <div className="bg-white p-7.5 overflow-auto whitespace-pre-wrap">{content.body}</div>
               )}
             </div>
             <div className="w-[90px] shrink-0">

@@ -16,7 +16,7 @@ const Button = ({ variant, onClick, disabled, children, icon }: Props) => {
     <button
       onClick={onClick}
       disabled={disabled}
-      className={`${variants[variant]} flex flex-col items-center justify-center w-[90px] h-10 rounded disabled:opacity-50 text-[10px] font-bold  transition-colors duration-300`}
+      className={`${variants[variant]} flex flex-col items-center justify-center w-[90px] h-10 rounded disabled:opacity-50 text-[10px] font-bold  transition-colors duration-300 cursor-pointer`}
     >
       {icon && <img src={icon} className="w-6 h-6" />}
       {children}
